@@ -97,7 +97,7 @@ def SignUp(request):
 
         form = UserAddForm(request.POST)
 
-        if form.is_valid:
+        if form.is_valid():
             user = form.save()
             user.save()
             group = Group.objects.get(name='student')
@@ -105,6 +105,11 @@ def SignUp(request):
             login(request, user)
             messages.success(request,"User Created.. Please Login....")
             return redirect("SignIn")
+        else:
+            # collect and show form errors
+            error_text = form.errors.as_text()
+            messages.error(request, f"There was an error with your submission: {error_text}")
+            print("Form errors:", error_text)
         
     return render(request,"register.html",{"form":form})
 
@@ -118,7 +123,7 @@ def RecruiterSignUp(request):
         logo = request.FILES["logo"]
         form = UserAddForm(request.POST)
 
-        if form.is_valid:
+        if form.is_valid():
             user = form.save()
             user.save()
             group = Group.objects.get(name='recruiter')
@@ -127,6 +132,10 @@ def RecruiterSignUp(request):
             recruiter.save()
             messages.success(request,"Recruiter Created.. Please wait for approvel....")
             return redirect("SignIn")
+        else:
+            error_text = form.errors.as_text()
+            messages.error(request, f"There was an error with your submission: {error_text}")
+            print("Form errors:", error_text)
         
     return render(request,"recruterregister.html",{"form":form})
 
